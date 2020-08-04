@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function listAllCate() {
   return request({
-    url: '/resourceCategory/all',
+    url: '/auth/resourceCategory/all',
     method: 'get'
   })
 }
 
 export function createResourceCategory(data) {
   return request({
-    url: '/resourceCategory',
+    url: '/auth/resourceCategory',
     method: 'post',
     data: data
   })
@@ -17,7 +17,7 @@ export function createResourceCategory(data) {
 
 export function updateResourceCategory(id, data) {
   return request({
-    url: '/resourceCategory/' + id,
+    url: '/auth/resourceCategory/' + id,
     method: 'put',
     params: data
   })
@@ -25,7 +25,7 @@ export function updateResourceCategory(id, data) {
 
 export function deleteResourceCategory(id) {
   return request({
-    url: '/resourceCategory/' + id,
+    url: '/auth/resourceCategory/' + id,
     method: 'delete'
   })
 }

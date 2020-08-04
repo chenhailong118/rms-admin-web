@@ -2,6 +2,7 @@
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
+window.isReresh = false;//用于判断是否刷新，不能少
 
 // 创建axios实例
 const service = axios.create({
@@ -24,6 +25,24 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
   response => {
+
+    /**
+     * 判断如果10分钟以内token超时，则刷新token
+     * @type {any}
+     */
+    let token = store.getters.token;
+    let expireTime = store.getters.expireTime;
+    let currentTime = Math.round(new Date() / 1000);
+    if (token && (expireTime - currentTime <= 60*10)){
+      if(!window.isReresh){
+        window.isReresh = true;
+        store.dispatch('RefreshToken').then(() => {
+        }).catch(() => {
+        })
+      }
+      window.isReresh = false;
+    }
+
   /**
   * code为非200是抛错 可结合自己业务进行修改
   */

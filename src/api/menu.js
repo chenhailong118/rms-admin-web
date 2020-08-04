@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function fetchList(parentId, params) {
   params.parentId = parentId
   return request({
-    url: '/menu',
+    url: '/auth/menu',
     method: 'get',
     params: params
   })
@@ -11,14 +11,14 @@ export function fetchList(parentId, params) {
 
 export function deleteMenu(id) {
   return request({
-    url: '/menu/' + id,
+    url: '/auth/menu/' + id,
     method: 'delete'
   })
 }
 
 export function createMenu(data) {
   return request({
-    url: '/menu',
+    url: '/auth/menu',
     method: 'post',
     data: data
   })
@@ -26,7 +26,7 @@ export function createMenu(data) {
 
 export function getMenuAll(params) {
   return request({
-    url: '/menu/all',
+    url: '/auth/menu/all',
     method: 'get',
     params: params
   })
@@ -34,7 +34,7 @@ export function getMenuAll(params) {
 
 export function update(id, params) {
   return request({
-    url: '/menu/' + id,
+    url: '/auth/menu/' + id,
     method: 'put',
     params: params
   })
@@ -42,7 +42,7 @@ export function update(id, params) {
 
 export function fetchTreeList() {
   return request({
-    url: '/menu/tree',
+    url: '/auth/menu/tree',
     method: 'get'
   })
 }
