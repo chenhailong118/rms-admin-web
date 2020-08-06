@@ -24,9 +24,6 @@ const user = {
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
-    SET_IMAGE_SERVER: (state, imageServer) => {
-      state.imageServer = imageServer
-    },
     SET_ROLES: (state, roles) => {
       state.roles = roles
     }
@@ -68,20 +65,6 @@ const user = {
             commit('SET_EXPIRE_TIME', expireTime)
           }
         }).catch(error => {})
-        // refreshToken().then(response => {
-        //   const data = response.data
-        //   if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-        //     commit('SET_ROLES', data.roles)
-        //   } else {
-        //     reject('getInfo: roles must be a non-null array !')
-        //   }
-        //   commit('SET_NAME', data.username)
-        //   commit('SET_AVATAR', data.icon)
-        //   commit('SET_IMAGE_SERVER', data.imageServer)
-        //   resolve(response)
-        // }).catch(error => {
-        //   reject(error)
-        // })
       })
     },
 
@@ -97,7 +80,6 @@ const user = {
           }
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', data.icon)
-          commit('SET_IMAGE_SERVER', data.imageServer)
           resolve(response)
         }).catch(error => {
           reject(error)

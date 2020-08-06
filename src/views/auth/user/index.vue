@@ -120,10 +120,10 @@
         <el-form-item label="昵称：">
           <el-input v-model="user.nickname" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="密码：">
+        <el-form-item v-if="!isEdit" label="密码：">
           <el-input v-model="user.password"  type="password" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码：">
+        <el-form-item v-if="!isEdit" label="确认密码：">
           <el-input v-model="user.comfirmPassword"  type="password" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="身份证号码：">
@@ -157,7 +157,7 @@
             style="width: 250px"
             accept="image/png,image/jpg,image/jpeg"
             class="avatar-uploader"
-            :action="postUrl"
+            :action="postIconUrl"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
@@ -247,15 +247,15 @@
         allocRoleIds:[],
         allRoleList:[],
         allocUserId:null,
-        postUrl:null,
-        iconUrl:null,
-        imageServer:null
+        postIconUrl:process.env.BASE_API + "/auth/user/icon",
+        imageServer:process.env.IMAGE_SERVER
+
       }
     },
     created() {
       this.getList();
       this.getAllRoleList();
-      this.getUrls();
+      // this.getUrls();
     },
     filters: {
       formatDateTime(time) {
@@ -418,12 +418,12 @@
           this.allRoleList = response.data;
         });
       },
-      getUrls(){
-        getUrls().then(response => {
-          this.postUrl = response.data.postIconUrl;
-          this.imageServer = response.data.imageServer;
-        })
-      },
+      // getUrls(){
+      //   getUrls().then(response => {
+      //     this.postUrl = response.data.postIconUrl;
+      //     this.imageServer = response.data.imageServer;
+      //   })
+      // },
       getRoleListByAdmin(userId) {
         getRoleByAdmin(userId).then(response => {
           let allocRoleList = response.data;

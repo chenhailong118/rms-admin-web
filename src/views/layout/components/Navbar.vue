@@ -2,8 +2,10 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
+
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
+        <span style="font-weight: bold;color: #00bcd4">{{username}}</span>,你好！
         <img class="user-avatar" :src="imageServer + avatar">
         <i class="el-icon-caret-bottom"></i>
       </div>
@@ -27,6 +29,12 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
+  data(){
+    return {
+      imageServer:process.env.IMAGE_SERVER,
+      username: this.$store.getters.name,
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger
@@ -34,8 +42,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
-      'imageServer'
+      'avatar'
     ])
   },
   methods: {
@@ -81,6 +88,7 @@ export default {
         width: 40px;
         height: 40px;
         border-radius: 10px;
+        background-color: #00bcd4;
       }
       .el-icon-caret-bottom {
         position: absolute;

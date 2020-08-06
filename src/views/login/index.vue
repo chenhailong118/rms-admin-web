@@ -35,7 +35,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码">
+            <el-input name="password" :type="pwdType" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码">
               <span slot="prefix">
                 <svg-icon icon-class="password" class="color-main"></svg-icon>
               </span>
@@ -44,7 +44,7 @@
               </span>
             </el-input>
           </el-form-item>
-          <el-form-item prop="imageCode">
+          <el-form-item prop="imageCode" @keyup.enter.native="handleLogin">
             <el-input name="imageCode"
                       type="text"
                       v-model="loginForm.imageCode"
@@ -54,13 +54,16 @@
                 <svg-icon icon-class="image-code" class="color-main"></svg-icon>
               </span>
               <span slot="suffix">
-                <img v-if="validateCode.imageCode" :src="imageUrl" @click="refreshImage()">
+                <img v-if="validateCode.imageCode" :src="imageCodeUrl" @click="refreshImage()">
               </span>
             </el-input>
           </el-form-item>s
           <el-form-item style="margin-bottom: 60px;text-align: center">
             <el-button class="color-main " style="width: 45%;background-color: #00bcd4;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" :loading="loading" @click.native.prevent="handleLogin">
               登&nbsp;&nbsp;&nbsp;&nbsp;录
+            </el-button>
+            <el-button style="width: 45%" type="primary" @click.native.prevent="visitorLogin">
+              游客账户获取
             </el-button>
           </el-form-item>
         </el-form>
@@ -122,7 +125,7 @@
           imageCode:false
         },
         baseURL:this.baseURL,
-        imageUrl:'',
+        imageCodeUrl:'',
         loading: false,
         pwdType: 'password',
         login_center_bg,
@@ -152,7 +155,7 @@
         getValidateCodeToken().then(response => {
           this.listLoading = false;
           this.loginForm.validateCodeToken = response.data.validatecodetoken;
-          this.imageUrl = 'http://localhost:8066/auth/code/image/' + response.data.validatecodetoken
+          this.imageCodeUrl = process.env.BASE_API + '/auth/code/image/' + response.data.validatecodetoken
           this.validateCode.imageCode = true;
         });
       },
@@ -187,7 +190,12 @@
             return false
           }
         })
-      }
+      },
+      visitorLogin(){
+        this.loginForm.username = 'visitor';
+        this.loginForm.password = 'visitor';
+        this.handleLogin()();
+      },
     },
     mounted: function() {
       window.onresize = () => {

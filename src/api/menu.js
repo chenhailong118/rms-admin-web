@@ -16,6 +16,15 @@ export function deleteMenu(id) {
   })
 }
 
+export function updateMenu(id, params) {
+  return request({
+    url: '/auth/menu/' + id,
+    method: 'put',
+    params: params
+  })
+}
+
+
 export function createMenu(data) {
   return request({
     url: '/auth/menu',
