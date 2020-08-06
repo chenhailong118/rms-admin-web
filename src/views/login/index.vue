@@ -62,7 +62,7 @@
             <el-button class="color-main " style="width: 45%;background-color: #00bcd4;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" :loading="loading" @click.native.prevent="handleLogin">
               登&nbsp;&nbsp;&nbsp;&nbsp;录
             </el-button>
-            <el-button style="width: 45%" type="primary" @click.native.prevent="visitorLogin">
+            <el-button style="width: 45%" type="primary" @click.native.prevent="visitorAccount">
               游客账户获取
             </el-button>
           </el-form-item>
@@ -191,7 +191,7 @@
           }
         })
       },
-      visitorLogin(){
+      visitorAccount(){
         this.loginForm.username = 'visitor';
         this.loginForm.password = 'visitor';
         this.handleLogin()();
