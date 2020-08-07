@@ -1,7 +1,7 @@
 {
-  "name": "aikandy-admin-web",
+  "name": "rms-admin-web",
   "version": "1.0.0",
-  "description": "aikandy后台管理前端",
+  "description": "rms后台管理前端",
   "author": "macro",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "element-ui": "^2.3.7",
     "js-cookie": "^2.2.0",
     "normalize.css": "^8.0.0",
-    "nprogress": "^0.2.0",
+    "nprogress": "^0.2.0",q
     "v-charts": "^1.19.0",
     "v-distpicker": "^1.0.20",
     "vue": "^2.5.2",

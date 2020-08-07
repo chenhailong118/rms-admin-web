@@ -20,9 +20,9 @@
                  ref="loginForm"
                  label-position="center">
           <div style="text-align: center">
-            <svg-icon icon-class="login-akdy" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
+            <svg-icon icon-class="login-rms" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
           </div>
-          <h2 class="login-title color-main">AKDY-后台管理系统</h2>
+          <h2 class="login-title color-main">RMS-后台管理系统</h2>
           <el-form-item prop="username">
             <el-input name="username"
                       type="text"
