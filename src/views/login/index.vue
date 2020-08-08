@@ -13,16 +13,21 @@
       <div class="poster hidden" v-if="!vedioCanPlay">
         <img :style="fixStyle" :src="login_gb" alt="">
       </div>
-      <el-card class="login-form-layout">
-        <el-form autoComplete="on"
+      <el-card class="login-layout">
+        <div style="text-align: center">
+          <svg-icon icon-class="login-rms" style="width: 56px;height: 0px;color: #409eff"></svg-icon>
+        </div>
+        <h1 class="login-title color-main">RMS-后台管理系统</h1>
+        <div class="login_header_title" style="margin-bottom: 10px;text-align: center">
+          <a href="javascript:;" class="login-tab" :class="{on: loginWay}" @click="loginWay=true">账号密码登录</a>
+          <a href="javascript:;" class="login-tab" :class="{on: !loginWay}" @click="loginWay=false">手机免密登录</a>
+        </div>
+        <el-form v-if="loginWay"
+                 autoComplete="on"
                  :model="loginForm"
                  :rules="loginRules"
                  ref="loginForm"
                  label-position="center">
-          <div style="text-align: center">
-            <svg-icon icon-class="login-rms" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
-          </div>
-          <h2 class="login-title color-main">RMS-后台管理系统</h2>
           <el-form-item prop="username">
             <el-input name="username"
                       type="text"
@@ -54,16 +59,49 @@
                 <svg-icon icon-class="image-code" class="color-main"></svg-icon>
               </span>
               <span slot="suffix">
-                <img v-if="validateCode.imageCode" :src="imageCodeUrl" @click="refreshImage()">
+                <img :src="imageCodeUrl + uuid" @click="refreshImage()">
               </span>
             </el-input>
           </el-form-item>s
           <el-form-item style="margin-bottom: 60px;text-align: center">
-            <el-button class="color-main " style="width: 45%;background-color: #00bcd4;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" :loading="loading" @click.native.prevent="handleLogin">
+            <el-button class="color-main" style="width: 45%;background-color: #00bcd4;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" :loading="loading" @click.native.prevent="handleLogin">
               登&nbsp;&nbsp;&nbsp;&nbsp;录
             </el-button>
-            <el-button style="width: 45%" type="primary" @click.native.prevent="visitorAccount">
+            <el-button class="color-main"style="width: 45%;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" @click.native.prevent="visitorAccount">
               游客账户获取
+            </el-button>
+          </el-form-item>
+        </el-form>
+        <el-form v-if="!loginWay"
+                 autoComplete="on"
+                 :model="loginSms"
+                 :rules="smsRules"
+                 ref="loginSms"
+                 label-position="center">
+          <el-form-item prop="phone">
+            <el-input name="phone"
+                      type="text"
+                      v-model="loginSms.phone"
+                      autoComplete="on"
+                      placeholder="手机号码">
+              <span slot="prefix">
+                <svg-icon icon-class="user" class="color-main"></svg-icon>
+              </span>
+              <span slot="suffix" @click="getSmsCode">
+                <span icon-class="eye" class="color-main">{{computeTime>0 ? `(${computeTime}s)已发送` : '获取验证码'}}</span>
+              </span>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="smsCode">
+            <el-input name="smsCode" type="text" v-model="loginSms.smsCode" autoComplete="on" placeholder="请输入验证码">
+              <span slot="prefix">
+                <svg-icon icon-class="password" class="color-main"></svg-icon>
+              </span>
+            </el-input>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 60px;text-align: center">
+            <el-button class="color-main" style="width: 45%;background-color: #00bcd4;border-color: #00bcd4;font-weight: bold;color: #000000" type="primary" :loading="loading" @click.native.prevent="handleLoginSms">
+              登&nbsp;&nbsp;&nbsp;&nbsp;录
             </el-button>
           </el-form-item>
         </el-form>
@@ -76,13 +114,16 @@
 </template>
 
 <script>
-  import {isvalidUsername} from '@/utils/validate';
+  import {isvalidUsername,validatePhoneNumber} from '@/utils/validate';
   import {setCookie,getCookie} from '@/utils/support';
   import login_center_bg from '@/assets/images/login_center_bg.png'
   import login_cover_mp4 from '@/assets/videos/coverr-golden-gate-bridge.mp4';
   import login_cover_webm from '@/assets/videos/login_cover.webm';
   import login_gb from '@/assets/images/login_bg.jpg';
-  import {getValidateCodeToken} from '@/api/login';
+  import {sendSmsCode} from '@/api/login';
+  //引入uuid文件
+  import uuidv1 from 'uuid/v1';
+  import {Message} from 'element-ui'
 
 
   export default {
@@ -103,29 +144,54 @@
         }
       };
       const validateImageCode = (rule, value, callback) => {
-        if (!isvalidUsername(value)) {
+        if (value.length !== 4) {
+          callback(new Error('请输入正确的验证码'))
+        } else {
+          callback()
+        }
+      };
+      const validatePhone = (rule, value, callback) => {
+        if (!validatePhoneNumber(value)) {
+          callback(new Error('请输入正确的手机号码'))
+        } else {
+          callback()
+        }
+      };
+      const validateSmsCode = (rule, value, callback) => {
+        if (value < 4) {
           callback(new Error('请输入正确的验证码'))
         } else {
           callback()
         }
       };
       return {
+        uuid: uuidv1(),//生成唯一编码
+        imageCodeUrl: process.env.BASE_API + '/auth/code/image/', //获取图片验证码地址
+        computeTime: 0, //短信验证码计时器
+        loginWay:true,//true代表账户密码登陆, false代表手机免密登录
+        //用户名密码登录参数
         loginForm: {
           username: '',
           password: '',
           imageCode: '',
-          validateCodeToken: ''
+          deviceId: '',
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
           password: [{required: true, trigger: 'blur', validator: validatePass}],
-          imageCode: [{required: true, trigger: 'blur', validator: validateImageCode}]
+          imageCode: [{required: true, trigger: 'blur', validator: validateImageCode}],
         },
-        validateCode:{
-          imageCode:false
+        //短信验证码登录参数
+        loginSms: {
+          deviceId: '',
+          phone: '',
+          smsCode: '',
+        },
+        smsRules:{
+          phone: [{required: true, trigger: 'blur', validator: validatePhone}],
+          smsCode: [{required: true, trigger: 'blur', validator: validateSmsCode}],
         },
         baseURL:this.baseURL,
-        imageCodeUrl:'',
         loading: false,
         pwdType: 'password',
         login_center_bg,
@@ -135,13 +201,14 @@
         fixStyle: '',
         login_cover_mp4,
         login_cover_webm,
-        login_gb
+        login_gb,
+        tabOne: 'login-tab-active',
+        tabTwo: 'login-tab-disactive',
       }
     },
     created() {
-      this.getValidateCodeToken();
       this.loginForm.username = getCookie("username");
-      this.loginForm.password = getCookie("password");
+      // this.loginForm.password = getCookie("password");
       if(this.loginForm.username === undefined||this.loginForm.username==null||this.loginForm.username===''){
         this.loginForm.username = 'admin';
       }
@@ -150,17 +217,8 @@
       }
     },
     methods: {
-      getValidateCodeToken() {
-        this.listLoading = true;
-        getValidateCodeToken().then(response => {
-          this.listLoading = false;
-          this.loginForm.validateCodeToken = response.data.validatecodetoken;
-          this.imageCodeUrl = process.env.BASE_API + '/auth/code/image/' + response.data.validatecodetoken
-          this.validateCode.imageCode = true;
-        });
-      },
       refreshImage(){
-        this.getValidateCodeToken();
+        this.uuid = uuidv1();
       },
       canplay() {
         this.vedioCanPlay = true
@@ -176,13 +234,31 @@
         this.$refs.loginForm.validate(valid => {
           if (valid) {
             this.loading = true;
+            this.loginForm.deviceId = this.uuid;
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false;
               setCookie("username",this.loginForm.username,15);
               setCookie("password",this.loginForm.password,15);
               this.$router.push({path: '/'})
             }).catch(() => {
-              this.getValidateCodeToken();
+              this.loading = false
+            })
+          } else {
+            console.log('参数验证不合法！');
+            return false
+          }
+        })
+      },
+      handleLoginSms(){
+        console.log("进入handleLoginSms")
+        this.$refs.loginSms.validate(valid => {
+          if (valid) {
+            this.loading = true;
+            this.loginSms.deviceId = this.uuid;
+            this.$store.dispatch('LoginSms', this.loginSms).then(() => {
+              this.loading = false;
+              this.$router.push({path: '/'})
+            }).catch(() => {
               this.loading = false
             })
           } else {
@@ -194,8 +270,41 @@
       visitorAccount(){
         this.loginForm.username = 'visitor';
         this.loginForm.password = 'visitor';
-        this.handleLogin()();
       },
+      alterToTabOne(){
+        this.tabOne = 'login-tab-active';
+        this.tabTwo = 'login-tab-disactive';
+      },
+      alterToTabTwo(){
+        this.tabOne = 'login-tab-disactive';
+        this.tabTwo = 'login-tab-active';
+      },
+      getSmsCode(){
+        if(!this.computeTime){
+          let params = {
+            phone: this.loginSms.phone,
+            deviceId: this.uuid
+          }
+          sendSmsCode(params).then(response => {
+            if(response.code == 200){
+              Message({
+                message: response.data,
+                type: 'success',
+                duration: 3 * 1000
+              })
+              this.computeTime = 60;
+              this.timer = setInterval(() => {
+                this.computeTime --;
+                if( this.computeTime <= 0){
+                  clearInterval(this.timer)
+                }
+              }, 1000);
+            }
+          });
+
+        }
+
+      }
     },
     mounted: function() {
       window.onresize = () => {
@@ -230,7 +339,7 @@
 </script>
 
 <style scoped>
-  .login-form-layout {
+  .login-layout {
     background: rgba(0, 0, 0, 0.2);
     z-index: 3;
     position: fixed;
@@ -277,6 +386,17 @@
     z-index: 1;
     position: absolute;
     background: rgba(0, 0, 0, 0.1);
+  }
+  .login_header_title a.on{
+    color: #00BCD4;
+    border-bottom: 3px solid #00BCD4;
+  }
+
+  .login-tab{
+    width: 45%;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 </style>
 

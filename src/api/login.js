@@ -1,12 +1,5 @@
 import request from '@/utils/request'
 
-//获取图片验证码
-export function getValidateCodeToken(){
-  return request({
-    url: '/auth/validatecodetoken',
-    method: 'get',
-  })
-}
 //刷新TOKEN
 export function refreshToken(){
   return request({
@@ -26,7 +19,19 @@ export function login(loginForm) {
     data: fromData,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'VALIDATE_CODE_TOKEN': loginForm.validateCodeToken
+      'deviceId': loginForm.deviceId
+    }
+  })
+}
+
+export function loginSms(loginParams) {
+  return request({
+    url: '/auth/mobile',
+    method: 'post',
+    params: loginParams,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'deviceId': loginParams.deviceId
     }
   })
 }
@@ -35,6 +40,14 @@ export function getInfo() {
   return request({
     url: '/auth/info',
     method: 'get',
+  })
+}
+
+export function sendSmsCode(params) {
+  return request({
+    url: '/auth/code/sms/' + params.deviceId,
+    method: 'get',
+    params: params,
   })
 }
 

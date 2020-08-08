@@ -28,3 +28,8 @@ export function validatAlphabets(str) {
   return reg.test(str)
 }
 
+/* 手机号码*/
+export function validatePhoneNumber(str) {
+  const reg = /^1[3456789]\d{9}$/
+  return reg.test(str);
+}

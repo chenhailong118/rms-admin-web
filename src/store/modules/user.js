@@ -1,4 +1,4 @@
-import { login, logout, getInfo, refreshToken } from '@/api/login'
+import { login, loginSms, logout, getInfo, refreshToken } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import {Message} from "element-ui";
 
@@ -35,8 +35,27 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim();
       return new Promise((resolve, reject) => {
-        const loginFrom = {username: username, password: userInfo.password, imageCode: userInfo.imageCode, validateCodeToken: userInfo.validateCodeToken}
+        const loginFrom = {username: username, password: userInfo.password, imageCode: userInfo.imageCode, deviceId: userInfo.deviceId}
         login(loginFrom).then(response => {
+          const data = response.data;
+          const tokenStr = data.tokenPrefix + data.token;
+          console.log("expireTime" + data.expireTime);
+          setToken(tokenStr);
+          commit('SET_TOKEN', tokenStr);
+          commit('SET_EXPIRE_TIME', data.expireTime);
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 手机免密登录
+    LoginSms({ commit }, userInfo) {
+      console.log("进入手机免密登录LoginSms")
+      const phone = userInfo.phone.trim();
+      return new Promise((resolve, reject) => {
+        const loginParams = {phone: phone, smsCode: userInfo.smsCode, deviceId: userInfo.deviceId}
+        loginSms(loginParams).then(response => {
           const data = response.data;
           const tokenStr = data.tokenPrefix + data.token;
           console.log("expireTime" + data.expireTime);
