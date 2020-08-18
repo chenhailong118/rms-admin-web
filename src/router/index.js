@@ -36,6 +36,39 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
   {
+    path:'/superstar',
+    component: Layout,
+    redirect: '/superstar/actor',
+    name: 'superstar',
+    meta: {title: '超级明星', icon: 'superstar'},
+    children: [
+      {
+        path: 'actor',
+        name: 'actor',
+        component: () => import('@/views/superstar/actor/index'),
+        meta: {title: '演员列表', icon: 'superstar-actor'}
+      },{
+        path: 'actorDetails',
+        name: 'actorDetails',
+        component: () => import('@/views/superstar/actor/details'),
+        meta: {title: '演员详情'},
+        hidden: true
+      },
+      {
+        path: 'resources',
+        name: 'resources',
+        component: () => import('@/views/superstar/resource/index'),
+        meta: {title: '作品列表', icon: 'superstar-resources'}
+      },{
+        path: 'resourceDetails',
+        name: 'resourceDetails',
+        component: () => import('@/views/superstar/resource/details'),
+        meta: {title: '作品详情'},
+        hidden: true
+      }
+    ]
+  },
+  {
     path:'/auth',
     component: Layout,
     redirect: '/auth/user',
@@ -46,7 +79,7 @@ export const asyncRouterMap = [
         path: 'user',
         name: 'user',
         component: () => import('@/views/auth/user/index'),
-        meta: {title: '用户列表', icon: 'auth-admin'}
+        meta: {title: '用户列表', icon: 'auth-user'}
       },
       {
         path: 'role',

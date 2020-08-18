@@ -208,7 +208,7 @@
     },
     created() {
       this.loginForm.username = getCookie("username");
-      // this.loginForm.password = getCookie("password");
+      this.loginForm.password = getCookie("password");
       if(this.loginForm.username === undefined||this.loginForm.username==null||this.loginForm.username===''){
         this.loginForm.username = 'admin';
       }
@@ -242,9 +242,11 @@
               this.$router.push({path: '/'})
             }).catch(() => {
               this.loading = false
+              this.refreshImage();
             })
           } else {
             console.log('参数验证不合法！');
+            this.refreshImage();
             return false
           }
         })

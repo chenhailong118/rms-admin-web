@@ -6,7 +6,7 @@
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <span style="font-weight: bold;color: #00bcd4">{{username}}</span>,你好！
-        <img class="user-avatar" :src="imageServer + avatar">
+        <img class="user-avatar" :src="staticServer + avatar">
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -31,7 +31,7 @@ import Hamburger from '@/components/Hamburger'
 export default {
   data(){
     return {
-      imageServer:process.env.IMAGE_SERVER,
+      staticServer:process.env.STATIC_SERVER,
       username: this.$store.getters.name,
     }
   },

@@ -38,7 +38,7 @@ export function loginSms(loginParams) {
 
 export function getInfo() {
   return request({
-    url: '/auth/info',
+    url: '/auth/security/info',
     method: 'get',
   })
 }

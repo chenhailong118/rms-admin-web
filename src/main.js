@@ -17,6 +17,10 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import VideoPlayer from 'vue-video-player'
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+Vue.use(VideoPlayer)
 Vue.use(ElementUI, { locale })
 Vue.use(VCharts)
 

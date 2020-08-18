@@ -161,7 +161,7 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="user.icon" :src="imageServer + user.icon" class="avatar">
+            <img v-if="user.icon" :src="staticServer + user.icon" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -248,8 +248,7 @@
         allRoleList:[],
         allocUserId:null,
         postIconUrl:process.env.BASE_API + "/auth/user/icon",
-        imageServer:process.env.IMAGE_SERVER
-
+        staticServer:process.env.STATIC_SERVER
       }
     },
     created() {
@@ -421,7 +420,7 @@
       // getUrls(){
       //   getUrls().then(response => {
       //     this.postUrl = response.data.postIconUrl;
-      //     this.imageServer = response.data.imageServer;
+      //     this.staticServer = response.data.staticServer;
       //   })
       // },
       getRoleListByAdmin(userId) {
