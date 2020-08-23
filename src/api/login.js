@@ -78,7 +78,6 @@ export function createAdmin(data) {
     url: '/auth/user',
     method: 'post',
     data: data,
-    // headers: {'Content-Type': 'application/json'}
   })
 }
 

@@ -65,7 +65,27 @@ export const asyncRouterMap = [
         component: () => import('@/views/superstar/resource/details'),
         meta: {title: '作品详情'},
         hidden: true
-      }
+      },
+      {
+        path: 'tag',
+        name: 'tag',
+        component: () => import('@/views/superstar/tag/index'),
+        meta: {title: '标签列表', icon: 'superstar-tag'}
+      },
+      {
+        path: 'addTag',
+        name: 'addTag',
+        component: () => import('@/views/superstar/tag/add'),
+        meta: {title: '添加标签'},
+        hidden: true
+      },
+      {
+        path: 'updateTag',
+        name: 'updateTag',
+        component: () => import('@/views/superstar/tag/update'),
+        meta: {title: '修改标签'},
+        hidden: true
+      },
     ]
   },
   {

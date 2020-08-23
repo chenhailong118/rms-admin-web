@@ -90,7 +90,7 @@
     <el-card shadow="never" body-style="padding: 10px" >
       <div class="grid" id="grid" v-loading="listLoading">
         <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
-          <img :src="staticServer + resourceInfo.resourcedir + '/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id)">
+          <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id)">
           <div>
             <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
             <el-button size="medium" type="danger" icon="el-icon-delete" circle style="float:right;height: auto;width: auto;padding: 0;margin-right: 5px" @click="handleDelete(resourceInfo.id)"></el-button>
@@ -290,7 +290,8 @@
     scoreFrom: null,
     scoreTo: null,
     sizeFrom: null,
-    sizeTo: null
+    sizeTo: null,
+    tagId: null,
     };
 
   export default {
@@ -317,8 +318,8 @@
     },
     created() {
       this.init();
-      this.getActors();
       this.getResources();
+      this.getActors();
     },
     filters: {
       formatDateTime(time) {
@@ -331,6 +332,7 @@
     },
     methods: {
       init(){
+        this.listQuery.tagId = this.$route.query.tagId;
         getDictInfoByName('水印').then(response => {
           if (response.code == 200) {
             this.marks = response.data;

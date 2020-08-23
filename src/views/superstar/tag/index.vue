@@ -2,33 +2,36 @@
   <div class="app-container">
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
-      <span style="margin-top: 5px">数据列表</span>
+      <span style="margin-top: 5px">标签列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddMenu()"
+        @click="handleAddTag()"
         size="mini">
         添加
       </el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="menuTable"
+      <el-table ref="tagTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="菜单名称" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
-        </el-table-column>
-        <el-table-column label="菜单级数" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
-        </el-table-column>
-        <el-table-column label="前端名称" align="center">
+        <el-table-column label="标签名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="前端图标" width="100" align="center">
-          <template slot-scope="scope"><svg-icon :icon-class="scope.row.icon"></svg-icon></template>
+        <el-table-column label="标签级数" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
+        </el-table-column>
+        <el-table-column label="排序" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.sort }}</template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
+        </el-table-column>
+        <el-table-column label="修改时间" align="center">
+          <template slot-scope="scope">{{scope.row.updateTime | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="是否显示" width="100" align="center">
           <template slot-scope="scope">
@@ -40,9 +43,7 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
-        </el-table-column>
+
         <el-table-column label="设置" width="120" align="center">
           <template slot-scope="scope">
             <el-button
@@ -85,20 +86,21 @@
 </template>
 
 <script>
-  import {fetchList,deleteMenu,update} from '@/api/menu'
+  import {getTags,deleteTag,update} from '@/api/tag'
+  import {formatDate} from '@/utils/date';
 
   export default {
-    name: "menuList",
+    name: "tagList",
     data() {
       return {
         list: null,
         total: null,
         listLoading: true,
         listQuery: {
+          parentId: 0,
           pageNum: 1,
           pageSize: 10
         },
-        parentId: 0
       }
     },
     created() {
@@ -115,18 +117,18 @@
       resetParentId(){
         this.listQuery.pageNum = 1;
         if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
+          this.listQuery.parentId = this.$route.query.parentId;
         } else {
-          this.parentId = 0;
+          this.listQuery.parentId = 0;
         }
       },
-      handleAddMenu() {
-        this.$router.push('/auth/addMenu');
+      handleAddTag() {
+        this.$router.push('/superstar/addTag');
       },
       getList() {
         this.listLoading = true;
 
-        fetchList(this.parentId, this.listQuery).then(response => {
+        getTags(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;
@@ -151,18 +153,18 @@
         });
       },
       handleShowNextLevel(index, row) {
-        this.$router.push({path: '/auth/menu', query: {parentId: row.id}})
+        this.$router.push({path: '/superstar/tag', query: {parentId: row.id}})
       },
       handleUpdate(index, row) {
-        this.$router.push({path:'/auth/updateMenu',query:{id:row.id}});
+        this.$router.push({path:'/superstar/updateTag',query:{id:row.id}});
       },
       handleDelete(index, row) {
-        this.$confirm('是否要删除该菜单', '提示', {
+        this.$confirm('是否要删除该标签', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteMenu(row.id).then(response => {
+          deleteTag(row.id).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -174,6 +176,13 @@
       }
     },
     filters: {
+      formatDateTime(time) {
+        if (time == null || time === '') {
+          return '';
+        }
+        let date = new Date(time);
+        return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+      },
       levelFilter(value) {
         if (value === 0) {
           return '一级';
@@ -187,7 +196,7 @@
         } else {
           return true;
         }
-      }
+      },
     }
   }
 </script>

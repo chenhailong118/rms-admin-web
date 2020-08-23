@@ -101,7 +101,7 @@
           <el-card shadow="never" body-style="padding: 10px" >
             <div class="grid" id="grid" v-loading="listLoading">
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
-                <img :src="staticServer + resourceInfo.resourcedir + '/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
+                <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
                   <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
@@ -186,7 +186,7 @@
           <el-card shadow="never" body-style="padding: 10px" >
             <div class="grid" id="grid" v-loading="listLoading">
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
-                <img :src="staticServer + resourceInfo.resourcedir + '/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
+                <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
                   <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
@@ -271,7 +271,7 @@
           <el-card shadow="never" body-style="padding: 10px" >
             <div class="grid" id="grid" v-loading="listLoading">
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
-                <img :src="staticServer + resourceInfo.resourcedir + '/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
+                <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
                   <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
@@ -363,6 +363,11 @@
         getDictInfoByName('国籍').then(response => {
           if (response.code == 200) {
             this.countrys = response.data;
+          }
+        });
+        getDictInfoByName('主题分类').then(response => {
+          if (response.code == 200) {
+            this.themes = response.data;
           }
         });
       },

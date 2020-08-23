@@ -9,6 +9,14 @@ export function getResources(params){
   })
 }
 
+//获取演员列表
+export function getActors(resourceId){
+  return request({
+    url: '/superstar/resource/actors/' + resourceId,
+    method: 'get',
+  })
+}
+
 export function updateResource(id, params) {
   return request({
     url: '/superstar/resource/' + id,
@@ -38,5 +46,13 @@ export function getImages(params){
     url: '/superstar/resource/dir',
     method: 'get',
     params: params,
+  })
+}
+
+export function allocTag(data) {
+  return request({
+    url: '/superstar/resource/allocTag',
+    method: 'post',
+    data:data
   })
 }
