@@ -43,7 +43,15 @@ export function deleteResource(id){
 
 export function getImages(params){
   return request({
-    url: '/superstar/resource/dir',
+    url: '/superstar/resource/image',
+    method: 'get',
+    params: params,
+  })
+}
+
+export function getGifs(params){
+  return request({
+    url: '/superstar/resource/gif',
     method: 'get',
     params: params,
   })
@@ -54,5 +62,13 @@ export function allocTag(data) {
     url: '/superstar/resource/allocTag',
     method: 'post',
     data:data
+  })
+}
+
+export function openLocalDir(params) {
+  return request({
+    url: '/superstar/resource/opendir',
+    method: 'get',
+    params: params,
   })
 }

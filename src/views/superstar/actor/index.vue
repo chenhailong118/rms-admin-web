@@ -74,7 +74,7 @@
         <el-card class="card" v-for="actor in actorLists" :key="actor.id" body-style="padding:0px;">
           <img :src="staticServer + actor.actordir + '/' + actor.head" @click="toActorDatails(actor.id)">
           <div>
-            <span style="font-weight:bold;float:left;width: 60px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{actor.name}}</span>
+            <span style="font-weight:bold;float:left;width: 64px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{actor.name}}</span>
             <el-button size="medium" type="danger" icon="el-icon-delete" circle style="float:right;height: auto;width: auto;padding: 0;margin-right: 5px" @click="handleDelete(actor.id)"></el-button>
             <el-button size="medium" type="primary" icon="el-icon-edit" circle style="float:right;height: auto;width: auto;padding: 0;margin-right: 2px" @click="handleUpdate(actor)"></el-button>
             <span style="font-weight:bold;float:right;margin-right: 0px">{{actor.star}}<i class="el-icon-star-on"></i></span>

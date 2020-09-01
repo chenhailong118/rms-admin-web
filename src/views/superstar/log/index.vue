@@ -20,8 +20,24 @@
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.keyword" class="input-width" placeholder="帐号/姓名" clearable></el-input>
+          <el-form-item label="">
+            <el-input v-model="listQuery.username" class="input-width" placeholder="用户名/昵称" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="">
+            <el-input v-model="listQuery.methodName" class="input-width" placeholder="接口方法名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="">
+            <el-select class="actor-search" size="small" v-model="listQuery.httpMethod" clearable placeholder="HTTP方法" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="method in methods"
+                :key="method"
+                :label="method"
+                :value="method">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="">
+            <el-input v-model="listQuery.returnCode" class="input-width" placeholder="返回码" clearable></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -35,7 +51,7 @@
                 :data="list"
                 style="width: 100%;"
                 v-loading="listLoading" border>
-        <el-table-column label="ID" width="50" align="center">
+        <el-table-column label="ID" width="80" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="用户名" width="100" align="center">
@@ -53,22 +69,22 @@
         <el-table-column label="耗时：/ms" width="68" align="center">
           <template slot-scope="scope">{{scope.row.spendTime}}</template>
         </el-table-column>
-        <el-table-column label="调用方法名" width="135" align="center">
+        <el-table-column label="调用方法名" width="150" align="center">
           <template slot-scope="scope">{{scope.row.methodName}}</template>
         </el-table-column>
-        <el-table-column label="接口描述" width="150" align="center">
+        <el-table-column label="接口描述" width="210" align="center">
           <template slot-scope="scope">{{scope.row.description}}</template>
         </el-table-column>
-        <el-table-column label="METHOD" width="90" align="center">
+        <el-table-column label="METHOD" width="85" align="center">
           <template slot-scope="scope">{{scope.row.httpMethod}}</template>
         </el-table-column>
-        <el-table-column label="返回码" width="80" align="center">
+        <el-table-column label="返回码" width="70" align="center">
           <template slot-scope="scope">{{scope.row.returnCode}}</template>
         </el-table-column>
-        <el-table-column label="返回消息" width="135" align="center">
+        <el-table-column label="返回消息" width="120" align="center">
           <template slot-scope="scope">{{scope.row.returnMsg}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="155" align="center">
+        <el-table-column label="操作" width="80" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="showDetails(scope.row.id)">
               查看详情
@@ -89,12 +105,28 @@
         :total="total">
       </el-pagination>
     </div>
-    <el-dialog :title="'日志详情'" :visible.sync="dialogVisible" width="40%">
+    <el-dialog :title="'日志详情'" :visible.sync="dialogVisible" width="60%">
       <div style="font-weight:bold;font-size: small;margin-top: 5px;">
-        <div>&#12288;ID&#12288;：{{log.id}}</div>
+        <div>&#12288;&#12288;&#12288;ID：{{log.id}}</div>
         <div>用户名称：{{log.username}}</div>
         <div>用户昵称：{{log.nickname}}</div>
         <div>调用时间：{{log.startTime | formatDateTime}}</div>
+        <div>耗&#12288;&#12288;时：{{log.spendTime}} ms</div>
+        <div>操作描述：{{log.description}}</div>
+        <div>请求类型：{{log.httpMethod}}</div>
+        <div>类&#12288;&#12288;名：{{log.clazzName}}</div>
+        <div>&#12288;方法名：{{log.methodName}}</div>
+        <div>&#12288;根路径：{{log.basePath}}</div>
+        <div>&#12288;&#12288;URI ：{{log.uri}}</div>
+        <div>&#12288;&#12288;URL：{{log.url}}</div>
+        <div>远程用户：{{log.remoteUser}}</div>
+        <div>远程 I P ：{{log.remoteIp}}</div>
+        <div>远程端口：{{log.remotePort}}</div>
+        <div>远程地址：{{log.remoteAddr}}</div>
+        <div>请求参数：{{log.parameter}}</div>
+        <div>&#12288;返回码：{{log.returnCode}}</div>
+        <div>返回消息：{{log.returnMsg}}</div>
+        <div>返回数据：{{log.returnData}}</div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -110,7 +142,10 @@
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 5,
-    keyword: null
+    username: null,
+    httpMethod: null,
+    methodName: null,
+    returnCode: null,
   };
   const defaultLog = {
     id: null,
@@ -143,6 +178,7 @@
         listLoading: false,
         dialogVisible: false,
         log: Object.assign({}, defaultLog),
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
       }
     },
     created() {
@@ -175,6 +211,13 @@
         this.listQuery.pageNum = val;
         this.getList();
       },
+      handleSearchList() {
+        this.listQuery.pageNum = 1;
+        this.getList();
+      },
+      handleResetSearch() {
+        this.listQuery = Object.assign({}, defaultListQuery);
+      },
       showDetails(logId){
         getLogById(logId).then(response => {
           this.log = response.data;
@@ -185,32 +228,32 @@
   }
 </script>
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar {
-    width: 250px;
-    height: 250px;
-    display: block;
-  }
-  .avatar-uploader-icon {
-    font-size: 50px;
-    color: #8c939d;
-    width: 250px;
-    height: 250px;
-    line-height: 250px;
-    text-align: center;
-  }
-  .avatar {
-    width: 250px;
-    height: 250px;
-    display: block;
-  }
+  /*.avatar-uploader .el-upload {*/
+  /*  border: 1px dashed #d9d9d9;*/
+  /*  border-radius: 6px;*/
+  /*  cursor: pointer;*/
+  /*  position: relative;*/
+  /*  overflow: hidden;*/
+  /*}*/
+  /*.avatar-uploader .el-upload:hover {*/
+  /*  border-color: #409EFF;*/
+  /*}*/
+  /*.avatar {*/
+  /*  width: 250px;*/
+  /*  height: 250px;*/
+  /*  display: block;*/
+  /*}*/
+  /*.avatar-uploader-icon {*/
+  /*  font-size: 50px;*/
+  /*  color: #8c939d;*/
+  /*  width: 250px;*/
+  /*  height: 250px;*/
+  /*  line-height: 250px;*/
+  /*  text-align: center;*/
+  /*}*/
+  /*.avatar {*/
+  /*  width: 250px;*/
+  /*  height: 250px;*/
+  /*  display: block;*/
+  /*}*/
 </style>

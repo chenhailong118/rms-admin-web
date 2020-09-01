@@ -103,7 +103,7 @@
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
                 <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
-                  <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
+                  <span style="float:left;width: 120px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
                 </div>
                 <div style="padding-top:5px;width: 100%;height: 100%;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" type="flex" align="left">
@@ -188,7 +188,7 @@
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
                 <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
-                  <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
+                  <span style="float:left;width: 120px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
                 </div>
                 <div style="padding-top:5px;width: 100%;height: 100%;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" type="flex" align="left">
@@ -273,7 +273,7 @@
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
                 <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
-                  <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
+                  <span style="float:left;width: 120px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
                 </div>
                 <div style="padding-top:5px;width: 100%;height: 100%;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" type="flex" align="left">

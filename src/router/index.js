@@ -28,7 +28,8 @@ export const constantRouterMap = [
     children: [{
       path: 'home',
       name: 'home',
-      component: () => import('@/views/home/index'),
+      // component: () => import('@/views/home/index'),
+      component: () => import('@/views/superstar/actor/index'),
       meta: {title: '首页', icon: 'home'}
     }]
   }
@@ -70,7 +71,7 @@ export const asyncRouterMap = [
         path: 'tag',
         name: 'tag',
         component: () => import('@/views/superstar/tag/index'),
-        meta: {title: '标签列表', icon: 'superstar-tag'}
+        meta: {title: '标签管理', icon: 'superstar-tag'}
       },
       {
         path: 'addTag',
@@ -86,6 +87,12 @@ export const asyncRouterMap = [
         meta: {title: '修改标签'},
         hidden: true
       },
+      {
+        path: 'log',
+        name: 'log',
+        component: () => import('@/views/superstar/log/index'),
+        meta: {title: '日志监控', icon: 'superstar-log'}
+      }
     ]
   },
   {

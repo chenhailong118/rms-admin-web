@@ -28,6 +28,7 @@
             <div>文件类型：{{resource.type | formatType}}</div>
             <div v-if="resource.type == 0 || resource === '0'">文件格式：{{resource.videotype | formatVideotype}}</div>
             <div>标&#12288;&#12288;记：{{resource.mark | formatMark}}</div>
+            <div v-if="resource.type == 0 || resource === '0'">资源大小：{{resource.size}} <span>GB</span></div>
             <div>国&#12288;&#12288;别：{{resource.country | formatCountry}}</div>
             <div>创建时间：{{resource.cteateTime | formatDateTime}}</div>
             <div>更新时间：{{resource.modifyTime | formatDateTime}}</div>
@@ -54,15 +55,15 @@
           </div >
           <div v-if="resource.type === 0">
             <div style="font-weight:bold;font-size: medium;margin-top: 30px;">视频内容：</div>
-            <video-player class="video-player vjs-custom-skin"
-                          ref="videoPlayer"
-                          :playsinline="true"
-                          :options="playerOptions">
-            </video-player>
+            <ckplayer :poster="poster" :videoUrls="videoUrls" :autoPlay="autoPlay" :loop="loop"></ckplayer>
+          </div>
+          <div>
+            <el-button type="success" disabled:isDisabled plain @click="openDir()">打开本地文件夹</el-button>
           </div>
           <div style="font-weight:bold;font-size: medium;margin-top: 30px;">图片内容：</div>
           <div class="demo-image__lazy">
-            <img v-for="image in images" :src="staticServer + resource.resourcedir + '/image/' + image"></img>
+            <img v-for="gif in gifs" :src="staticServer + resource.resourcedir + '/gif/' + gif" style="width: 100%; height: 100%">
+            <img v-for="image in images" :src="staticServer + resource.resourcedir + '/image/' + image" style="width: 100%; height: 100%" v-if="image != 'poster.jpg' && image != 'poster-full.jpg'">
           </div>
         </el-card>
       </el-card>
@@ -95,13 +96,18 @@
   </div>
 </template>
 <script>
-  import {getResources, getActors, getImages, allocTag} from '@/api/viresource';
+  import {getResources, getActors, getImages, getGifs, allocTag, openLocalDir} from '@/api/viresource';
   import {formatDate} from '@/utils/date';
   import {getDictInfoByName} from '@/api/dictinfo';
   import {getTags, listTagByResourceId} from '@/api/tag';
+  import 'videojs-flash' // 引入才能播放rtmp视频
+  import 'videojs-contrib-hls' // 引入才能播放m3u8文件
+  import ckplayer from './components/ckplayer'
+
   let that;
   export default {
     name: "resourceDetails",
+    components: { ckplayer },
 
     data() {
       return {
@@ -114,40 +120,16 @@
         videotypes: null,
         staticServer: process.env.STATIC_SERVER,
         images: null,
-        //播放器相关配置
-        playerOptions: {
-          //播放速度
-          playbackRates: [0.5, 1.0, 1.5, 2.0],
-          //如果true,浏览器准备好时开始回放。
-          autoplay: false,
-          // 默认情况下将会消除任何音频。
-          muted: false,
-          // 导致视频一结束就重新开始。
-          loop: false,
-          // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-          preload: 'auto',
-          language: 'zh-CN',
-          // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-          aspectRatio: '16:9',
-          // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-          fluid: true,
-          sources: [],
-          //你的封面地址
-          poster: '',
-          //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-          notSupportedMessage: '此视频暂无法播放，请稍后再试',
-          controlBar: {
-            timeDivider: true,
-            durationDisplay: true,
-            remainingTimeDisplay: false,
-            //全屏按钮
-            fullscreenToggle: true
-          }
-        },
+        gifs: null,
         dialogFormVisible: false,
         allTag: null,
         allParentTag: null,
         allocTag: null,
+        isDisabled: process.env.NODE_ENV === 'production',
+        videoUrls: [],
+        autoPlay: false,
+        loop: false,
+        poster: null,//视频封面图片
       }
     },
     beforeCreate: function () {
@@ -192,17 +174,34 @@
             let data = response.data;
             console.log(data.list[0])
             this.resource = data.list[0];
-            this.playerOptions.poster = this.staticServer + data.list[0].resourcedir + '/image/' + data.list[0].posterFull;
-            data.list[0].videoname.split(',').forEach((name, index) => {
-              this.playerOptions.sources.push({
-                type: "video/" + name.split('.')[1],
-                src: this.staticServer + this.resource.resourcedir + '/' + name,
-              })
-            });
+            this.poster = this.staticServer + data.list[0].resourcedir + '/image/' + data.list[0].posterFull;
+            if(data.list[0].samplevideo != null){
+              this.videoUrls.push([
+                this.staticServer + this.resource.resourcedir + '/' + data.list[0].samplevideo,
+                'video/mp4',
+                '预览视频',
+                0
+              ]);
+            };
+            if(data.list[0].videoname != null){
+              data.list[0].videoname.split(',').forEach((name, index) => {
+                this.videoUrls.push([
+                  this.staticServer + this.resource.resourcedir + '/' + name,
+                  'video/' + name.split('.')[1],
+                  '视频' + index,
+                  index
+                ])
+              });
+            };
             let paramsImage = {dir: this.resource.resourcedir};
             getImages(paramsImage).then(response => {
               if (response.code == 200) {
                 this.images = response.data;
+              }
+            });
+            getGifs(paramsImage).then(response => {
+              if (response.code == 200) {
+                this.gifs = response.data;
               }
             });
           }
@@ -348,6 +347,21 @@
       toResourceList(tagId){
         this.$router.push('/superstar/resources?tagId=' + tagId);
       },
+      openDir(){
+        let params = {dir: this.resource.resourcedir};
+        openLocalDir(params).then(response => {
+          this.$message({
+            message: '本地文件打开成功',
+            type: 'success',
+            duration: 1000
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '本地文件打开失败'
+          });
+        });
+      }
     },
     filters: {
       formatDateTime(time) {
