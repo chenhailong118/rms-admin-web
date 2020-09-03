@@ -1,5 +1,5 @@
 <template>
-  <div id="video"></div>
+  <div id="video" class="video"></div>
 </template>
 
 <script>
@@ -13,7 +13,7 @@
     },
     watch: {
       videoUrls: {
-        handler(newVideoUrls, VideoUrls) {
+        handler(newVideoUrls) {
           this.initVideo(newVideoUrls,this.autoPlay);
         },
         immediate: true
@@ -23,20 +23,24 @@
       this.initVideo(this.videoUrls,this.autoPlay);
     },
     methods:{
+      loadedHandler() {
+        player.addListener('error', errorHandler); //监听元数据
+      },
       initVideo(videoUrls,autoPlay) {
         // 挂载完成后进行
         var videoObject = {
           container: '#video', //容器的ID或className
           variable: 'player', //播放函数名称
-          autoplay: this.autoPlay,//自动播放
+          autoplay: autoPlay,//自动播放
           loaded: 'loadedHandler', //当播放器加载后执行的函数
           loop: this.loop, //播放结束是否循环播放
           cktrack: '', //字幕文件
+          volume: 0.2, //初始音量，默认值0.8
           poster: this.poster, //封面图片
-          preview: { //预览图片
-            file: ['', ''],
-            scale: 2
-          },
+          // preview: { //预览图片
+          //   file: ['', ''],
+          //   scale: 2
+          // },
           config: '', //指定配置函数
           debug: true, //是否开启调试模式
           drag: 'start', //拖动的属性
@@ -51,7 +55,7 @@
           //     time: 150
           //   }
           // ],
-          video: this.videoUrls
+          video: videoUrls,
         };
         // 定义一个对象
         var player = new ckplayer(videoObject);

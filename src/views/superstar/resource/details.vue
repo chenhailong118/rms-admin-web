@@ -126,7 +126,7 @@
         allParentTag: null,
         allocTag: null,
         isDisabled: process.env.NODE_ENV === 'production',
-        videoUrls: [],
+        videoUrls: null,
         autoPlay: false,
         loop: false,
         poster: null,//视频封面图片
@@ -170,29 +170,26 @@
         let params = {id: this.id};
         getResources(params).then(response => {
           this.listLoading = false;
+          console.log(this.videoUrls);
           if (response.code == 200) {
             let data = response.data;
             console.log(data.list[0])
             this.resource = data.list[0];
             this.poster = this.staticServer + data.list[0].resourcedir + '/image/' + data.list[0].posterFull;
-            if(data.list[0].samplevideo != null){
-              this.videoUrls.push([
-                this.staticServer + this.resource.resourcedir + '/' + data.list[0].samplevideo,
-                'video/mp4',
-                '预览视频',
-                0
-              ]);
+            var arr = new Array();
+            if(data.list[0].samplevideo != null && data.list[0].samplevideo != ''){
+              arr.push(['','video/mp4','TOP',0]);
+              arr.push([this.staticServer + this.resource.resourcedir + '/' + data.list[0].samplevideo,'video/mp4','预览',0]);
             };
             if(data.list[0].videoname != null){
+              if(arr.length == 0){
+                arr.push(['','video/mp4','TOP',0]);
+              }
               data.list[0].videoname.split(',').forEach((name, index) => {
-                this.videoUrls.push([
-                  this.staticServer + this.resource.resourcedir + '/' + name,
-                  'video/' + name.split('.')[1],
-                  '视频' + index,
-                  index
-                ])
+                arr.push([this.staticServer + this.resource.resourcedir + '/' + name,'video/mp4','视频'+index,0]);
               });
             };
+            this.videoUrls = arr;
             let paramsImage = {dir: this.resource.resourcedir};
             getImages(paramsImage).then(response => {
               if (response.code == 200) {
@@ -372,7 +369,7 @@
         return formatDate(date, 'yyyy-MM-dd')
       },
       formatTheme(theme){
-        if (theme == null || theme === '') {
+        if (theme == null || theme === '' || that.themes == null || that.themes === '') {
           return null;
         }
         let themeName = that.themes.filter(x=>x.id == theme);
@@ -380,9 +377,10 @@
           return null;
         }
         return themeName[0].name
+        // return null;
       },
       formatMark(mark){
-        if (mark == null || mark === '') {
+        if (mark == null || mark === '' || that.marks == null || that.marks === '') {
           return null;
         }
         let markName = that.marks.filter(x=>x.id == mark);
@@ -392,7 +390,7 @@
         return markName[0].name
       },
       formatCountry(country){
-        if (country == null || country === '') {
+        if (country == null || country === '' || that.countrys == null || that.countrys === '') {
           return null;
         }
         let countryName = that.countrys.filter(x=>x.id == country);
@@ -411,7 +409,7 @@
         return null
       },
       formatVideotype(videotype){
-        if (videotype == null || videotype === '') {
+        if (videotype == null || videotype === '' || that.videotypes == null || that.videotypes === '') {
           return null;
         }
         let videotypeName = that.videotypes.filter(x=>x.id == videotype);
