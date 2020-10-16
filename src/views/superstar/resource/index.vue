@@ -122,7 +122,7 @@
           <el-input v-model="resource.designation" style="width: 80%"></el-input>
         </el-form-item>
         <el-form-item label="发行日期：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="resource.issuingdate" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="resource.issuingdate" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item label="播放时长：">
           <el-input v-model="resource.duration" style="width: 80%"></el-input><span> 分钟</span>
@@ -138,6 +138,7 @@
               :label="item.name"
               :value="item.id">
             </el-option>
+
           </el-select>
         </el-form-item>
         <el-form-item label="制造商：">
@@ -218,10 +219,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="resource.cteateTime" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="resource.cteateTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item label="更新时间：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="resource.modifyTime" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="resource.modifyTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item label="资源启用状态" prop="status">
           <el-radio-group v-model="resource.status" size="medium">
@@ -278,7 +279,7 @@
 
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 14,
+    pageSize: 70,
     keyWord: null,
     type: null,
     theme: null,
@@ -398,7 +399,9 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
       toResourceDatails(id){
-        this.$router.push('/superstar/resourceDetails?id=' + id);
+        // this.$router.push('/superstar/resourceDetails?id=' + id);
+        let resourceDetails = this.$router.resolve('/superstar/resourceDetails?id=' + id);
+        window.open(resourceDetails.href, '_blank');
       },
       handleAdd() {
         this.dialogVisible = true;

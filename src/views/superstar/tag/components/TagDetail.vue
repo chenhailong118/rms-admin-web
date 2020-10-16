@@ -59,7 +59,7 @@
         rules: {
           name: [
             {required: true, message: '请输入标签名称', trigger: 'blur'},
-            {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
+            {min: 1, max: 140, message: '长度在 1 到 140 个字符', trigger: 'blur'}
           ],
         }
       }

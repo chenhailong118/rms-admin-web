@@ -84,7 +84,7 @@
     </el-card>
     <div class="pagination-container" style="margin-right: 20px">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNum"
-           layout="total, sizes,prev, pager, next,jumper" :page-size="listQuery.pageSize" :page-sizes="[24, 48, 72]" :total="total">
+           layout="total, sizes,prev, pager, next,jumper" :page-size="listQuery.pageSize" :page-sizes="[24, 40, 80, 120]" :total="total">
       </el-pagination>
     </div>
     <el-dialog
@@ -121,10 +121,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="出生日期：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="actor.birthdate" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="actor.birthdate" style="width: 80%;" format="yyyy-MM-dd" ></el-date-picker>
         </el-form-item>
         <el-form-item label="出道日期：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="actor.debutdate" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="actor.debutdate" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item label="身高：">
           <el-input v-model="actor.height" style="width: 80%"></el-input><span> CM</span>
@@ -155,10 +155,10 @@
           <el-input v-model="actor.star" style="width: 80%"></el-input>
         </el-form-item>
         <el-form-item v-if="isEdit" label="创建时间：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="actor.createTime" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="actor.createTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item v-if="isEdit"  label="更新时间：">
-          <el-date-picker type="date" placeholder="选择日期" v-model="actor.modifyTime" style="width: 80%;" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="actor.modifyTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item label="用户启用状态" prop="status">
           <el-radio-group v-model="actor.status" size="medium">
@@ -351,7 +351,9 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
       toActorDatails(id){
-        this.$router.push('/superstar/actorDetails?id=' + id);
+        // this.$router.push('/superstar/actorDetails?id=' + id);
+        let actorDetails = this.$router.resolve('/superstar/actorDetails?id=' + id);
+        window.open(actorDetails.href, '_blank');
       },
     }
   }

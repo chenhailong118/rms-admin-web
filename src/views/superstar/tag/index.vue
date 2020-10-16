@@ -19,7 +19,7 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="标签名称" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
+          <template  slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
         <el-table-column label="标签级数" width="100" align="center">
           <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
@@ -66,6 +66,12 @@
               type="text"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
+            <el-button
+              v-if="scope.row.level === 1"
+              size="mini"
+              type="text"
+              @click="toResourceList(scope.$index, scope.row)">查看
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -77,7 +83,7 @@
         @current-change="handleCurrentChange"
         layout="total, sizes,prev, pager, next,jumper"
         :page-size="listQuery.pageSize"
-        :page-sizes="[10,15,20]"
+        :page-sizes="[20,40,80,200]"
         :current-page.sync="listQuery.pageNum"
         :total="total">
       </el-pagination>
@@ -99,7 +105,7 @@
         listQuery: {
           parentId: 0,
           pageNum: 1,
-          pageSize: 10
+          pageSize: 200
         },
       }
     },
@@ -158,6 +164,10 @@
       handleUpdate(index, row) {
         this.$router.push({path:'/superstar/updateTag',query:{id:row.id}});
       },
+      toResourceList(index, row) {
+        let resources = this.$router.resolve('/superstar/resources?tagId=' + row.id);
+        window.open(resources.href, '_blank');
+      },
       handleDelete(index, row) {
         this.$confirm('是否要删除该标签', '提示', {
           confirmButtonText: '确定',
@@ -173,7 +183,7 @@
             this.getList();
           });
         });
-      }
+      },
     },
     filters: {
       formatDateTime(time) {

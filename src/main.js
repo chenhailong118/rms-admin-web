@@ -37,7 +37,7 @@ new Vue({
 // Object.defineProperties(Vue.prototype, {
 //   // 注册不同环境的HOST为vue的原型对象属性，名称为baseURL
 //   baseURL: {
-//     value: process.env.BASE_API,
+//     value: process.env.API_GATEWAY_SERVER,
 //     writable: false
 //   }
 // })

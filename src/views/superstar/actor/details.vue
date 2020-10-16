@@ -103,9 +103,14 @@
               <el-card class="card" v-for="resourceInfo in resourceLists" :key="resourceInfo.id" body-style="padding:0px;">
                 <img :src="staticServer + resourceInfo.resourcedir + '/image/' + resourceInfo.poster" @click="toResourceDatails(resourceInfo.id,resourceInfo.type)">
                 <div>
-                  <span style="float:left;width: 120px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
+<!--                  <span style="float:left;width: 120px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>-->
+<!--                  <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>-->
+                  <span style="float:left;width: 70px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;">{{resourceInfo.designation}}</span>
+                  <el-button size="medium" type="danger" icon="el-icon-delete" circle style="float:right;height: auto;width: auto;padding: 0;margin-right: 5px" @click="handleDelete(resourceInfo.id)"></el-button>
+                  <el-button size="medium" type="primary" icon="el-icon-edit" circle style="float:right;height: auto;width: auto;padding: 0;margin-right: 2px" @click="handleUpdate(resourceInfo)"></el-button>
                   <span style="float:right;margin-right: 2px">{{resourceInfo.score}}<i class="el-icon-star-on"></i></span>
                 </div>
+
                 <div style="padding-top:5px;width: 100%;height: 100%;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" type="flex" align="left">
                   <span>{{resourceInfo.title}}</span></span>
                 </div>
@@ -289,6 +294,137 @@
                        layout="total, sizes,prev, pager, next,jumper" :page-size="listQuery.pageSize" :page-sizes="[14, 28, 42, 56, 70]" :total="total">
         </el-pagination>
       </div>
+      <el-dialog
+        title="编辑资源"
+        :visible.sync="dialogVisible"
+        width="60%">
+        <el-form :model="resource"
+                 ref="resourceForm"
+                 label-width="150px" size="small">
+          <el-form-item label="标题：">
+            <el-input v-model="resource.title" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="编号：" :inline="true">
+            <el-input v-model="resource.designation" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="发行日期：">
+            <el-date-picker type="date" placeholder="选择日期" v-model="resource.issuingdate" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="播放时长：">
+            <el-input v-model="resource.duration" style="width: 80%"></el-input><span> 分钟</span>
+          </el-form-item>
+          <el-form-item label="导演：">
+            <el-input v-model="resource.director" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="演员：">
+            <el-select size="small" v-model="resource.actors" multiple filterable clearable placeholder="请选择">
+              <el-option
+                v-for="item in actorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+
+            </el-select>
+          </el-form-item>
+          <el-form-item label="制造商：">
+            <el-input v-model="resource.manufacturer" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="发型商：">
+            <el-input v-model="resource.publisher" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="得分：">
+            <el-input v-model="resource.score" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="资源大小：">
+            <el-input v-model="resource.size" style="width: 80%"></el-input><span> Gb</span>
+          </el-form-item>
+          <el-form-item label="资源类型：">
+            <el-select size="small" v-model="resource.type" clearable placeholder="请选择" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="item in types"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="resource.type === 0" label="视频文件格式：">
+            <el-select size="small" v-model="resource.videotype" clearable placeholder="请选择" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="item in videotypes"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="resource.type === 0" label="视频名称：">
+            <el-input v-model="resource.videoname" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item v-if="resource.type === 0" label="预览视频名称：">
+            <el-input v-model="resource.samplevideo" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="海报名称：">
+            <el-input v-model="resource.poster" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="海报名称二：">
+            <el-input v-model="resource.posterFull" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="主题分类：">
+            <el-select size="small" v-model="resource.theme" clearable placeholder="请选择" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="item in themes"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="有无水印">
+            <el-select size="small" v-model="resource.mark" clearable placeholder="请选择" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="item in marks"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="文件存储相对路径：">
+            <el-input v-model="resource.resourcedir" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="国籍：">
+            <el-select size="small" v-model="resource.country" clearable placeholder="请选择" prefix-icon="el-icon-location-information">
+              <el-option
+                v-for="item in countrys"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="创建时间：">
+            <el-date-picker type="date" placeholder="选择日期" v-model="resource.cteateTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="更新时间：">
+            <el-date-picker type="date" placeholder="选择日期" v-model="resource.modifyTime" style="width: 80%;" format="yyyy-MM-dd"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="资源启用状态" prop="status">
+            <el-radio-group v-model="resource.status" size="medium">
+              <el-radio border :label="0">禁用</el-radio>
+              <el-radio border :label="1">启用</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="简介">
+            <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 10}" v-model="resource.describe" style="width: 80%;height: 300px;"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible =false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+      </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -296,12 +432,12 @@
   import {getActors} from '@/api/actor';
   import {formatDate} from '@/utils/date';
   import {getDictInfoByName} from '@/api/dictinfo';
-  import {getResources} from '@/api/viresource';
+  import {getResources,deleteResource,updateResource} from '@/api/viresource';
 
   const defaultListQuery = {
     actorId: null,
     pageNum: 1,
-    pageSize: 14,
+    pageSize: 70,
     keyWord: null,
     type: null,
     theme: null,
@@ -315,6 +451,34 @@
     scoreTo: null,
     sizeFrom: null,
     sizeTo: null
+  };
+  const defaultResource = {
+    id: null,
+    title: null,
+    designation: null,
+    issuingdate: null,
+    duration: null,
+    director: null,
+    manufacturer: null,
+    publisher: null,
+    score: null,
+    type: 0,
+    size: null,
+    videotype: null,
+    videoname: null,
+    samplevideo: null,
+    poster: 'poster.jpg',
+    posterFull: 'poster-full.jpg',
+    theme: null,
+    mark: null,
+    describe: null,
+    // resourcedir: '/superstar/',
+    resourcedir: '/resource2/H动漫/',
+    country: null,
+    status: 1,
+    cteateTime: null,
+    modifyTime: null,
+    actors: null,
   };
 
   let that;
@@ -333,10 +497,14 @@
         countrys: null,
         marks: null,
         themes: null,
+        videotypes: null,
         types: [{id: 0, name: '视频'},{id: 1, name: '图片'}],
         total: 0,
         totalPage: 0,
         label: 'all',
+        resource: Object.assign({}, defaultResource),
+        dialogVisible: false,
+        actorList: null,
       }
     },
     beforeCreate: function () {
@@ -349,7 +517,6 @@
     },
     methods: {
       init() {
-        this.listQuery.actorId = this.id;
         getDictInfoByName('水印').then(response => {
           if (response.code == 200) {
             this.marks = response.data;
@@ -370,6 +537,16 @@
             this.themes = response.data;
           }
         });
+        getDictInfoByName('视频文件格式').then(response => {
+          if (response.code == 200) {
+            this.videotypes = response.data;
+          }
+        });
+        getActors().then(response => {
+          if (response.code == 200) {
+            this.actorList = response.data.list;
+          }
+        });
       },
       getActor() {
         this.listLoading = true;
@@ -384,6 +561,7 @@
       },
       getResources(){
         this.listLoading = true;
+        this.listQuery.actorId = this.id;
         getResources(this.listQuery).then(response => {
           this.listLoading = false;
           if (response.code == 200) {
@@ -430,7 +608,48 @@
         this.getResources();
       },
       toResourceDatails(id){
-        this.$router.push('/superstar/resourceDetails?id=' + id);
+        // this.$router.push('/superstar/resourceDetails?id=' + id);
+        let resourceDetails = this.$router.resolve('/superstar/resourceDetails?id=' + id);
+        window.open(resourceDetails.href, '_blank');
+      },
+      handleDelete(id) {
+        this.$confirm('是否要确认?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteResource(id).then(response => {
+            this.$message({
+              message: '删除成功！',
+              type: 'success'
+            });
+            this.getResources();
+          })
+        })
+      },
+      handleUpdate(resourceInfo) {
+        this.dialogVisible = true;
+        this.isEdit = true;
+        this.resource = Object.assign({},resourceInfo);
+      },
+      handleDialogConfirm() {
+        this.$confirm('是否要确认?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if (this.isEdit) {
+            updateResource(this.resource.id,this.resource).then(response => {
+              this.$message({
+                message: '修改成功！',
+                type: 'success'
+              });
+              this.dialogVisible =false;
+              this.init();
+              this.getResources();
+            })
+          }
+        });
       },
     },
     filters: {

@@ -17,7 +17,7 @@
         <div style="text-align: center">
           <svg-icon icon-class="login-rms" style="width: 56px;height: 0px;color: #409eff"></svg-icon>
         </div>
-        <h1 class="login-title color-main">RMS-后台管理系统</h1>
+        <h1 class="login-title color-main">RMS-资源管理系统</h1>
         <div class="login_header_title" style="margin-bottom: 10px;text-align: center">
           <a href="javascript:;" class="login-tab" :class="{on: loginWay}" @click="loginWay=true">账号密码登录</a>
           <a href="javascript:;" class="login-tab" :class="{on: !loginWay}" @click="loginWay=false">手机免密登录</a>
@@ -166,7 +166,7 @@
       };
       return {
         uuid: uuidv1(),//生成唯一编码
-        imageCodeUrl: process.env.BASE_API + '/auth/code/image/', //获取图片验证码地址
+        imageCodeUrl: process.env.API_GATEWAY_SERVER + '/auth/code/image/', //获取图片验证码地址
         computeTime: 0, //短信验证码计时器
         loginWay:true,//true代表账户密码登陆, false代表手机免密登录
         //用户名密码登录参数

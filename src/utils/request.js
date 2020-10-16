@@ -6,7 +6,7 @@ window.isReresh = false;//用于判断是否刷新，不能少
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
+  baseURL: process.env.API_GATEWAY_SERVER, // api的base_url
   timeout: 15000 // 请求超时时间
 })
 

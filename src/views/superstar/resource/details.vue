@@ -273,7 +273,9 @@
         return !(checkedCount === 0 || checkedCount === subTags.length);
       },
       toActorDetails(actorId){
-        this.$router.push('/superstar/actorDetails?id=' + actorId);
+        // this.$router.push('/superstar/actorDetails?id=' + actorId);
+        let actorDetails = this.$router.resolve('/superstar/actorDetails?id=' + actorId);
+        window.open(actorDetails.href, '_blank');
       },
       isAllChecked(parentId) {
         let subTags = this.getSubTagByParentId(parentId);
@@ -342,7 +344,9 @@
         this.$forceUpdate();
       },
       toResourceList(tagId){
-        this.$router.push('/superstar/resources?tagId=' + tagId);
+        // this.$router.push('/superstar/resources?tagId=' + tagId);
+        let resources = this.$router.resolve('/superstar/resources?tagId=' + tagId);
+        window.open(resources.href, '_blank');
       },
       openDir(){
         let params = {dir: this.resource.resourcedir};

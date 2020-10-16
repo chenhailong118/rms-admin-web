@@ -247,7 +247,7 @@
         allocRoleIds:[],
         allRoleList:[],
         allocUserId:null,
-        postIconUrl:process.env.BASE_API + "/auth/user/icon",
+        postIconUrl:process.env.API_GATEWAY_SERVER + "/auth/user/icon",
         staticServer:process.env.STATIC_SERVER
       }
     },

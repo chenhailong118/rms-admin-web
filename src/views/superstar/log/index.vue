@@ -141,7 +141,7 @@
 
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 5,
+    pageSize: 45,
     username: null,
     httpMethod: null,
     methodName: null,
@@ -228,32 +228,4 @@
   }
 </script>
 <style>
-  /*.avatar-uploader .el-upload {*/
-  /*  border: 1px dashed #d9d9d9;*/
-  /*  border-radius: 6px;*/
-  /*  cursor: pointer;*/
-  /*  position: relative;*/
-  /*  overflow: hidden;*/
-  /*}*/
-  /*.avatar-uploader .el-upload:hover {*/
-  /*  border-color: #409EFF;*/
-  /*}*/
-  /*.avatar {*/
-  /*  width: 250px;*/
-  /*  height: 250px;*/
-  /*  display: block;*/
-  /*}*/
-  /*.avatar-uploader-icon {*/
-  /*  font-size: 50px;*/
-  /*  color: #8c939d;*/
-  /*  width: 250px;*/
-  /*  height: 250px;*/
-  /*  line-height: 250px;*/
-  /*  text-align: center;*/
-  /*}*/
-  /*.avatar {*/
-  /*  width: 250px;*/
-  /*  height: 250px;*/
-  /*  display: block;*/
-  /*}*/
 </style>
