@@ -5,7 +5,7 @@
 
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <span style="font-weight: bold;color: #00bcd4">{{username}}</span>,你好！
+        hello,<span style="font-weight: bold;color: #00bcd4">{{username}}</span>!
         <img class="user-avatar" :src="staticServer + avatar">
         <i class="el-icon-caret-bottom"></i>
       </div>

@@ -19,9 +19,12 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="标签名称" align="center">
-          <template  slot-scope="scope">{{scope.row.name}}</template>
+          <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="标签级数" width="100" align="center">
+        <el-table-column label="标签别名" align="center">
+          <template slot-scope="scope">{{scope.row.aliase}}</template>
+        </el-table-column>
+        <el-table-column label="层级" width="100" align="center">
           <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
         </el-table-column>
         <el-table-column label="排序" width="100" align="center">

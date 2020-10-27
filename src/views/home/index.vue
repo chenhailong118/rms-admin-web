@@ -1,216 +1,43 @@
 <template> 
   <div class="app-container">
-    <el-card class="filter-container" shadow="never">
-      <div>
-        <i class="el-icon-search"></i>
-        <span>筛选搜索</span>
-        <el-button
-          style="float:right"
-          type="primary"
-          @click="handleSearchList()"
-          size="small">
-          查询搜索
-        </el-button>
-        <el-button
-          style="float:right;margin-right: 15px"
-          @click="handleResetSearch()"
-          size="small">
-          重置
-        </el-button>
-      </div>
-      <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.keyword" class="input-width" placeholder="帐号/姓名" clearable></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-card>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>日志列表</span>
-    </el-card>
+    <h2>项目相关博客列表!</h2>
     <div class="table-container">
-      <el-table ref="logTable"
-                :data="list"
-                style="width: 100%;"
-                v-loading="listLoading" border>
-        <el-table-column label="ID" width="50" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
-        </el-table-column>
-        <el-table-column label="用户名" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.username}}</template>
-        </el-table-column>
-        <el-table-column label="昵称" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.nickname}}</template>
-        </el-table-column>
-        <el-table-column label="用户IP" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.remoteIp}}</template>
-        </el-table-column>
-        <el-table-column label="调用时间" width="155" align="center">
-          <template slot-scope="scope">{{scope.row.startTime | formatDateTime}}</template>
-        </el-table-column>
-        <el-table-column label="耗时：/ms" width="68" align="center">
-          <template slot-scope="scope">{{scope.row.spendTime}}</template>
-        </el-table-column>
-        <el-table-column label="调用方法名" width="135" align="center">
-          <template slot-scope="scope">{{scope.row.methodName}}</template>
-        </el-table-column>
-        <el-table-column label="接口描述" width="150" align="center">
-          <template slot-scope="scope">{{scope.row.description}}</template>
-        </el-table-column>
-        <el-table-column label="METHOD" width="90" align="center">
-          <template slot-scope="scope">{{scope.row.httpMethod}}</template>
-        </el-table-column>
-        <el-table-column label="返回码" width="80" align="center">
-          <template slot-scope="scope">{{scope.row.returnCode}}</template>
-        </el-table-column>
-        <el-table-column label="返回消息" width="135" align="center">
-          <template slot-scope="scope">{{scope.row.returnMsg}}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="155" align="center">
+      <el-table :data="blogList" border style="width: 100%" stripe>
+        <el-table-column prop="category" label="专栏分类"  min-width="20%" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="showDetails(scope.row.id)">
-              查看详情
-            </el-button>
+            <a :href="scope.row.category_url" target="_blank" class="buttonText">{{scope.row.category}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="category" label="文章标题（链接）" min-width="80%">
+          <template slot-scope="scope">
+            <a :href="scope.row.blog_url" target="_blank" class="buttonText">{{scope.row.blog_itle}}</a>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.pageNum"
-        :page-size="listQuery.pageSize"
-        :page-sizes="[5,15,45]"
-        :total="total">
-      </el-pagination>
-    </div>
-    <el-dialog :title="'日志详情'" :visible.sync="dialogVisible" width="40%">
-      <div style="font-weight:bold;font-size: small;margin-top: 5px;">
-        <div>&#12288;ID&#12288;：{{log.id}}</div>
-        <div>用户名称：{{log.username}}</div>
-        <div>用户昵称：{{log.nickname}}</div>
-        <div>调用时间：{{log.startTime | formatDateTime}}</div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
-  import {getLogs, getLogById} from '@/api/log';
-  import {formatDate} from '@/utils/date';
-
-  const defaultListQuery = {
-    pageNum: 1,
-    pageSize: 5,
-    keyword: null
-  };
-  const defaultLog = {
-    id: null,
-    username: null,
-    nickname: null,
-    startTime: null,
-    spendTime: null,
-    description: null,
-    basePath: null,
-    uri: null,
-    url: null,
-    httpMethod: null,
-    remoteUser: null,
-    remoteIp: null,
-    remoteAddr: null,
-    parameter: null,
-    returnCode: null,
-    returnMsg: null,
-    returnData: null,
-    clazzName: null,
-    methodName: null,
-  };
   export default {
-    name: 'userList',
     data() {
       return {
-        listQuery: Object.assign({}, defaultListQuery),
-        list: null,
-        total: null,
-        listLoading: false,
-        dialogVisible: false,
-        log: Object.assign({}, defaultLog),
+        blogList: [
+          {"category": "Spring Security","category_url": "https://blog.csdn.net/still_ly/category_10406054.html","blog_itle": "一、Spring Security核心原理及Demo演示", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108398767"},
+          {"category": "Spring Security","category_url": "https://blog.csdn.net/still_ly/category_10406054.html","blog_itle": "二、Spring Security认证和授权-基于表单的认证流程及源码解析", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108926079"},
+          {"category": "Spring Security","category_url": "https://blog.csdn.net/still_ly/category_10406054.html","blog_itle": "三、Spring Security认证和授权-授权流程及源码解析", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108932251"},
+          {"category": "Spring Security","category_url": "https://blog.csdn.net/still_ly/category_10406054.html","blog_itle": "四、Spring Security认证和授权-动态授权解决方案", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108941998"},
+          {"category": "Spring Security","category_url": "https://blog.csdn.net/still_ly/category_10406054.html","blog_itle": "五、Spring Security认证和授权-实现自定义图片验证码功能", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/109294579"},
+          {"category": "前端","category_url": "https://blog.csdn.net/still_ly/category_10350060.html","blog_itle": "一、资源管理系统-CKPLayer去除播放窗口水印", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108347854"},
+          {"category": "前端","category_url": "https://blog.csdn.net/still_ly/category_10350060.html","blog_itle": "二、资源管理系统-VUE使用ckplayer实现视频列表播放", "blog_url":"https://blog.csdn.net/STIll_ly/article/details/108342856"},
+        ],
       }
     },
     created() {
-      this.getList();
-    },
-    filters: {
-      formatDateTime(time) {
-        if (time == null || time === '') {
-          return null;
-        }
-        let date = new Date(time);
-        return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-      },
     },
     methods: {
-      getList() {
-        this.listLoading = true;
-        getLogs(this.listQuery).then(response => {
-          this.listLoading = false;
-          this.list = response.data.list;
-          this.total = response.data.total;
-        });
-      },
-      handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
-        this.getList();
-      },
-      handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
-        this.getList();
-      },
-      showDetails(logId){
-        getLogById(logId).then(response => {
-          this.log = response.data;
-          this.dialogVisible = true;
-        });
-      }
-    }
+    },
   }
 </script>
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar {
-    width: 250px;
-    height: 250px;
-    display: block;
-  }
-  .avatar-uploader-icon {
-    font-size: 50px;
-    color: #8c939d;
-    width: 250px;
-    height: 250px;
-    line-height: 250px;
-    text-align: center;
-  }
-  .avatar {
-    width: 250px;
-    height: 250px;
-    display: block;
-  }
+
 </style>

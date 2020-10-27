@@ -193,8 +193,8 @@
     weight: null,
     cup: null,
     threecircles: null,
-    head: null,
-    actordir: null,
+    head: "head.jpg",
+    actordir: "/resource/",
     star: null,
     describe: null,
     status: null,
@@ -203,7 +203,7 @@
   };
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 24,
+    pageSize: 120,
     name: null,
     sex: null,
     country: null,

@@ -67,7 +67,7 @@
           </div>
         </el-card>
       </el-card>
-      <el-dialog title="" :visible.sync="dialogFormVisible" width="48%">
+      <el-dialog title="" :visible.sync="dialogFormVisible" width="47%">
         <el-card class="form-container" shadow="never">
           <span>标签</span>
           <div v-for="(parentTag,index) in allParentTag" :class="index===0?'top-line':null" :key="'parentTag'+parentTag.id">
@@ -229,7 +229,7 @@
         });
       },
       getAllParentTags() {
-        getTags({parentId: 0}).then(response => {
+        getTags({parentId: 0,hidden: 0}).then(response => {
           this.allParentTag = response.data.list;
           for (let i = 0; i < this.allParentTag.length; i++) {
             this.allParentTag[i].checked = false;

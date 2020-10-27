@@ -12,6 +12,31 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
+  console.log("请求URL：" + config.url);
+  console.log(config.url.indexOf('/auth/refreshtoken'));
+  if(config.url.indexOf('/auth/refreshtoken') == -1){
+    /**
+     * 判断如果10分钟以内token超时，则刷新token
+     * @type {any}
+     */
+    let token = store.getters.token;
+    let expireTime = store.getters.expireTime;
+    let currentTime = Math.round(new Date() / 1000);
+    let expireIn = expireTime - currentTime;
+    console.log("expireTime: " + expireTime);
+    console.log("currentTime: " + currentTime);
+    console.log("expireIn: " + expireIn);
+    if (token && expireIn <= 60*10){
+      console.log("RefreshToken.....");
+      if(!window.isReresh){
+        window.isReresh = true;
+        store.dispatch('RefreshToken').then(() => {
+        }).catch(() => {
+        })
+      }
+      window.isReresh = false;
+    }
+  }
   if (store.getters.token) {
     config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
@@ -25,24 +50,6 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
   response => {
-
-    /**
-     * 判断如果10分钟以内token超时，则刷新token
-     * @type {any}
-     */
-    let token = store.getters.token;
-    let expireTime = store.getters.expireTime;
-    let currentTime = Math.round(new Date() / 1000);
-    if (token && (expireTime - currentTime <= 60*10)){
-      if(!window.isReresh){
-        window.isReresh = true;
-        store.dispatch('RefreshToken').then(() => {
-        }).catch(() => {
-        })
-      }
-      window.isReresh = false;
-    }
-
   /**
   * code为非200是抛错 可结合自己业务进行修改
   */

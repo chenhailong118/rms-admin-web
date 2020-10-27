@@ -7,6 +7,9 @@
       <el-form-item label="标签名称：" prop="name">
         <el-input v-model="tag.name"></el-input>
       </el-form-item>
+      <el-form-item label="标签别名：" prop="aliase">
+        <el-input v-model="tag.aliase"></el-input>
+      </el-form-item>
       <el-form-item label="上级标签：">
         <el-select v-model="tag.parentId"
                    placeholder="请选择标签">

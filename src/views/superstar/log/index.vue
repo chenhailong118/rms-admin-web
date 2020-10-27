@@ -48,12 +48,12 @@
     </el-card>
     <div class="table-container">
       <el-table ref="logTable"
-                :data="list"
+                :data="logList"
                 style="width: 100%;"
                 v-loading="listLoading" border>
-        <el-table-column label="ID" width="80" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
-        </el-table-column>
+<!--        <el-table-column label="ID" width="0" align="center">-->
+<!--          <template slot-scope="scope" v-show="false">{{scope.row.id}}</template>-->
+<!--        </el-table-column>-->
         <el-table-column label="用户名" width="100" align="center">
           <template slot-scope="scope">{{scope.row.username}}</template>
         </el-table-column>
@@ -69,19 +69,19 @@
         <el-table-column label="耗时：/ms" width="68" align="center">
           <template slot-scope="scope">{{scope.row.spendTime}}</template>
         </el-table-column>
-        <el-table-column label="调用方法名" width="150" align="center">
+        <el-table-column label="调用方法名" width="170" align="center" show-overflow-tooltip="true">
           <template slot-scope="scope">{{scope.row.methodName}}</template>
         </el-table-column>
-        <el-table-column label="接口描述" width="210" align="center">
+        <el-table-column label="接口描述" width="210" align="center" show-overflow-tooltip="true">
           <template slot-scope="scope">{{scope.row.description}}</template>
         </el-table-column>
         <el-table-column label="METHOD" width="85" align="center">
           <template slot-scope="scope">{{scope.row.httpMethod}}</template>
         </el-table-column>
-        <el-table-column label="返回码" width="70" align="center">
+        <el-table-column label="返回码" width="70" align="center" highlight-current-row="true">
           <template slot-scope="scope">{{scope.row.returnCode}}</template>
         </el-table-column>
-        <el-table-column label="返回消息" width="120" align="center">
+        <el-table-column label="返回消息" width="150" align="center" show-overflow-tooltip="true">
           <template slot-scope="scope">{{scope.row.returnMsg}}</template>
         </el-table-column>
         <el-table-column label="操作" width="80" align="center">
@@ -173,7 +173,7 @@
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
-        list: null,
+        logList: null,
         total: null,
         listLoading: false,
         dialogVisible: false,
@@ -198,7 +198,7 @@
         this.listLoading = true;
         getLogs(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
+          this.logList = response.data.list;
           this.total = response.data.total;
         });
       },
