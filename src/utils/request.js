@@ -26,7 +26,7 @@ service.interceptors.request.use(config => {
     console.log("expireTime: " + expireTime);
     console.log("currentTime: " + currentTime);
     console.log("expireIn: " + expireIn);
-    if (token && expireIn <= 60*10){
+    if (token && expireIn <= 60*25){
       console.log("RefreshToken.....");
       if(!window.isReresh){
         window.isReresh = true;

@@ -105,7 +105,7 @@
     </el-card>
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNum"
-                     layout="total, sizes,prev, pager, next,jumper" :page-size="listQuery.pageSize" :page-sizes="[14, 28, 42, 56, 70]" :total="total">
+                     layout="total, sizes,prev, pager, next,jumper" :page-size="listQuery.pageSize" :page-sizes="[28, 56, 84, 112]" :total="total">
       </el-pagination>
     </div>
     <el-dialog
